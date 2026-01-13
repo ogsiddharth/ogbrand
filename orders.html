@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders - Alpha Clothing</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body style="background-color: #f1f3f6;">
+
+    <header class="site-header">
+        <div class="container">
+            <div class="header-main">
+                <a class="brand" href="index.html"><img src="form1.png" alt="Alpha" class="logo-img"></a>
+                <nav class="nav-actions">
+                    <a href="index.html" class="desktop-link">Home</a>
+                    <a href="cart.html" class="cart-link"><i class="fas fa-shopping-cart"></i><span>Cart</span></a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container" style="margin-top: 20px;">
+        <h2 style="margin-bottom: 20px;">My Orders</h2>
+        
+        <div id="orders-container">
+            <div style="text-align:center; padding: 40px;">Loading Orders...</div>
+        </div>
+    </main>
+
+    <div id="cancel-modal" class="modal" aria-hidden="true">
+        <div class="modal-dialog" style="max-width:300px;">
+            <h3>Cancel Order?</h3>
+            <textarea id="cancel-reason" placeholder="Reason for cancellation..." style="width:100%; margin:10px 0; padding:10px;"></textarea>
+            <div style="display:flex; gap:10px;">
+                <button class="btn" style="background:#ef4444; flex:1;" id="confirm-cancel-btn">Confirm Cancel</button>
+                <button class="btn ghost" style="flex:1;" onclick="document.getElementById('cancel-modal').classList.remove('open')">Close</button>
+            </div>
+        </div>
+    </div>
+<script type="module" src="script.js"></script>
+    <script type="module">
+        import { auth, db, doc, getDoc, updateDoc } from "./firebase-config.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const ordersContainer = document.getElementById('orders-container');
+        let currentOrders = [];
+        let currentUid = null;
+        let cancelOrderId = null;
+
+        // 1. FETCH ORDERS
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUid = user.uid;
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                
+                if (userDoc.exists()) {
+                    // Orders ko naya pehle (Reverse) dikhana hai
+                    currentOrders = (userDoc.data().orders || []).reverse();
+                    renderOrders();
+                } else {
+                    ordersContainer.innerHTML = '<div style="padding:20px;">No orders found.</div>';
+                }
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+
+        // 2. RENDER ORDERS UI
+        function renderOrders() {
+            if (currentOrders.length === 0) {
+                ordersContainer.innerHTML = `
+                    <div style="text-align:center; padding: 50px; background: white;">
+                        <img src="https://rukminim1.flixcart.com/www/800/800/promos/16/05/2019/d438a32e-765a-4d8b-b4a6-520b560971e8.png" style="height: 100px; margin-bottom: 15px;">
+                        <h3>No Orders Yet!</h3>
+                        <a href="index.html" class="btn" style="margin-top:10px;">Shop Now</a>
+                    </div>`;
+                return;
+            }
+
+            ordersContainer.innerHTML = currentOrders.map(order => `
+                <div class="order-card" style="background:white; padding:20px; margin-bottom:20px; border-radius:8px; border:1px solid #eee;">
+                    <div style="display:flex; justify-content:space-between; border-bottom:1px solid #f0f0f0; padding-bottom:10px; margin-bottom:10px;">
+                        <div>
+                            <span style="font-weight:700; background:#2874f0; color:white; padding:2px 8px; border-radius:4px; font-size:12px;">ORDER #${order.id}</span>
+                            <div style="font-size:12px; color:#777; margin-top:5px;">${order.date}</div>
+                        </div>
+                        <div style="text-align:right;">
+                            <span style="font-weight:700; color:${order.status === 'Cancelled' ? 'red' : 'green'};">${order.status}</span>
+                            <div style="font-weight:600;">${order.total}</div>
+                        </div>
+                    </div>
+
+                    ${order.items.map(item => `
+                        <div style="display:flex; gap:15px; margin-bottom:10px;">
+                            <img src="${item.img}" style="width:60px; height:60px; object-fit:contain; border:1px solid #eee;">
+                            <div>
+                                <div style="font-weight:500; font-size:14px;">${item.title}</div>
+                                <div style="font-size:12px; color:#555;">Size: ${item.size || 'M'}</div>
+                                <div style="font-size:13px; font-weight:600;">₹${item.price}</div>
+                            </div>
+                        </div>
+                    `).join('')}
+
+                    ${order.status !== 'Cancelled' ? `
+                        <div style="border-top:1px solid #f0f0f0; padding-top:10px; margin-top:10px;">
+                            <button onclick="window.openCancelModal(${order.id})" style="color:red; background:none; border:1px solid red; padding:5px 15px; border-radius:4px; cursor:pointer; font-size:13px;">Cancel Order</button>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        // 3. CANCEL LOGIC
+        window.openCancelModal = (id) => {
+            cancelOrderId = id;
+            document.getElementById('cancel-modal').classList.add('open');
+        };
+
+        document.getElementById('confirm-cancel-btn').onclick = async () => {
+            const reason = document.getElementById('cancel-reason').value;
+            if(!reason) { alert("Please enter a reason"); return; }
+
+            // Find and Update Order locally
+            const orderIndex = currentOrders.findIndex(o => o.id === cancelOrderId);
+            if(orderIndex > -1) {
+                currentOrders[orderIndex].status = 'Cancelled';
+                
+                // Update in Database (Hum puri list wapas bhej rahe hain kyunki array update complex hota hai)
+                // Note: Production me hum reverse wapas seedha karte hain, par yahan simple rakhte hain
+                // Hume database wali list chahiye (Jo reverse nahi hai)
+                
+                try {
+                    // Fetch fresh list to be safe
+                    const userDoc = await getDoc(doc(db, "users", currentUid));
+                    let dbOrders = userDoc.data().orders || [];
+                    
+                    // Database wali list me dhoondo
+                    const dbIndex = dbOrders.findIndex(o => o.id === cancelOrderId);
+                    if(dbIndex > -1) {
+                        dbOrders[dbIndex].status = 'Cancelled';
+                        
+                        // Save updated list
+                        await updateDoc(doc(db, "users", currentUid), {
+                            orders: dbOrders
+                        });
+
+                        // WhatsApp Cancellation Message
+                        const msg = encodeURIComponent(`*CANCEL REQUEST* ❌\nOrder ID: ${cancelOrderId}\nReason: ${reason}\nUser: ${currentUid}`);
+                        window.open(`https://wa.me/919554781215?text=${msg}`, '_blank');
+                        
+                        alert("Order Cancelled Successfully");
+                        location.reload();
+                    }
+                } catch(err) {
+                    console.error(err);
+                    alert("Error cancelling order");
+                }
+            }
+        };
+    </script>
+</body>
+</html>

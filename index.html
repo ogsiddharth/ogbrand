@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="google-site-verification" content="W7fPIG4sPCIJIL_tZWGkYrhUEJryB6fpQNHTQ2zu3B8" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Alpha Clothing - Premium Men's Fashion</title>
+
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <header class="site-header">
+        <div class="container">
+            <div class="header-main">
+                <a class="brand" href="index.html">
+                    <img src="form1.png" alt="Alpha" class="logo-img">
+                </a>
+                <div class="search-bar-container">
+                    <input type="text" id="search-input" placeholder="Search for products, brands and more">
+                    <button id="search-btn"><i class="fas fa-search"></i></button>
+                </div>
+                <nav class="nav-actions">
+                    <button class="login-btn" id="signin-btn">Login</button>
+                    <div class="user-dropdown" id="user-profile" style="display: none;">
+                        <span class="user-trigger">
+                            <i class="fas fa-user-circle"></i> 
+                            <span id="user-name">User</span> 
+                            <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: 3px;"></i>
+                        </span>
+                        
+                        <div class="dropdown-menu">
+                           <a href="profile.html"><i class="fas fa-user-circle"></i> My Profile</a>
+                            <a href="orders.html"><i class="fas fa-box"></i> My Orders</a>
+                            <a href="wishlist.html"><i class="fas fa-heart"></i> Wishlist</a>
+                            <hr style="margin: 5px 0; border: 0; border-top: 1px solid #eee;">
+                            <a href="#" onclick="logout()" style="color: #ff6161;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                    <a href="cart.html" class="cart-link">
+                        <div style="position: relative;">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span id="cart-count" class="cart-badge">0</span>
+                        </div>
+                        <span>Cart</span>
+                    </a>
+                    <button class="menu-btn" id="menu-toggle">
+                        <span></span><span></span><span></span>
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main style="background-color: #f1f3f6; min-height: 100vh; padding-bottom: 20px;">
+        
+        <div class="category-row container">
+            <a href="#women-section" class="cat-item">
+                <div class="cat-img-box"><img src="Essentials.png" alt="Women" onerror="this.src='form1.png'"></div>
+                <span>Women</span>
+            </a>
+            <a href="#shoes-section" class="cat-item">
+                <div class="cat-img-box"><img src="streetwear.png" alt="Shoes" onerror="this.src='form1.png'"></div>
+                <span>Shoes</span>
+            </a>
+            <a href="#watch-section" class="cat-item">
+                <div class="cat-img-box"><img src="https://rukminim1.flixcart.com/fk-p-flap/128/128/image/503791c8df142335.png" alt="Watches" onerror="this.src='form1.png'"></div>
+                <span>Watches</span>
+            </a>
+            <a href="#product-grid-section" class="cat-item">
+                <div class="cat-img-box"><img src="Gemini_Generated_Image_xyc6lnxyc6lnxyc6.png" alt="Men" onerror="this.src='form1.png'"></div>
+                <span>Men</span>
+            </a>
+            <a href="#collections" class="cat-item">
+                <div class="cat-img-box"><img src="https://rukminim1.flixcart.com/image/612/612/xif0q/belt/p/x/m/30-mens-formal-black-artificial-leather-belt-35mm-wide-adjustable-original-imagh7m5wzzgzzhz.jpeg?q=70" alt="Belts" onerror="this.src='form1.png'"></div>
+                <span>Belts</span>
+            </a>
+        </div>
+
+        <section class="container" style="margin-top: 15px; position: relative;">
+            <div class="slider-container">
+                <div class="slider-wrapper" id="banner-slider">
+                    <a href="#deal-section-container" class="slide">
+                        <img src="banner1_sale.jpg.png" alt="Big Sale" style="width:100%;" >
+                    </a>
+                    <a href="#collections" class="slide">
+                        <img src="banner2_new.jpg.png" alt="New Styles" style="width:100%;" >
+                    </a>
+                    <a href="#shoes-section" class="slide">
+                        <img src="banner3_shoes.jpg.png" alt="Shoes" style="width:100%;">
+                    </a>
+                </div>
+                <button class="slider-btn prev" onclick="moveSlide(-1)">&#10094;</button>
+                <button class="slider-btn next" onclick="moveSlide(1)">&#10095;</button>
+            </div>
+        </section>
+
+        <section class="container hero-section">
+            <div class="hero-wrapper">
+                <div class="hero-content">
+                    <span class="hero-subtitle">NEW ARRIVALS 2025</span>
+                    <h1>Level Up Your <br> <span style="color: #2874f0;">Style Game</span></h1>
+                    <p>Premium streetwear collections crafted for the modern generation.</p>
+                    <div class="hero-btns">
+                        <a href="#product-grid-section" class="btn">Shop Now</a>
+                    </div>
+                </div>
+                <div class="hero-video-box">
+                    <div class="video-overlay"></div>
+                    <video autoplay loop muted playsinline>
+                        <source src="banner-video.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+        </section>
+        
+        <section class="container" id="deal-section-container">
+            <div class="deals-section">
+                <div class="deals-header">
+                    <div class="deals-title">
+                        <h2>Deals of the Day</h2>
+                        <div class="timer" id="countdown-timer"><i class="fas fa-clock"></i> Loading...</div>
+                    </div>
+                    <a href="#" class="view-all-btn">VIEW ALL</a>
+                </div>
+                <div id="product-grid" class="product-grid"></div>
+            </div>
+        </section>
+
+        <section class="container" id="new-arrival-banner" style="display: none; margin-top: 20px;">
+            <div style="background: linear-gradient(45deg, #111, #2874f0); border-radius: 12px; padding: 40px; text-align: center; color: white; position: relative; overflow: hidden;">
+                <h1 style="font-size: 40px; margin-bottom: 10px;">✨ HELLO 2026 ✨</h1>
+                <p style="font-size: 18px; margin-bottom: 20px;">The Deals are over, but the Future is here.</p>
+                <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                    <img src="https://rukminim1.flixcart.com/image/612/612/xif0q/jacket/a/h/i/xl-1-no-23307222-wrogn-original-imagkhw5ygejyg6z.jpeg?q=70" onerror="this.src='Gemini_Generated_Image_xyc6lnxyc6lnxyc6.png'" style="height: 150px; border-radius: 8px; border: 2px solid white;">
+                    <img src="https://rukminim1.flixcart.com/image/612/612/xif0q/shoe/1/8/g/-original-imagn9qf9h8s4x2d.jpeg?q=70" onerror="this.src='streetwear.png'" style="height: 150px; border-radius: 8px; border: 2px solid white;">
+                </div>
+                <a href="#collections" class="btn" style="background: white; color: #2874f0; margin-top: 20px; border: none; display: inline-block; text-decoration: none;">EXPLORE NEW COLLECTION</a>
+            </div>
+        </section>
+
+        <section class="container" id="women-section" style="margin-top: 15px;">
+            <div class="deals-section">
+                <div class="deals-header">
+                    <div class="deals-title"><h2>Trending in Women's Fashion</h2></div>
+                    <button class="view-all-btn">VIEW ALL</button>
+                </div>
+                <div id="women-grid" class="product-grid"></div>
+            </div>
+        </section>
+
+        <section class="container" id="shoes-section" style="margin-top: 15px;">
+            <div class="deals-section">
+                <div class="deals-header">
+                    <div class="deals-title"><h2>Footwear Hub - Up to 60% Off</h2></div>
+                    <button class="view-all-btn">VIEW ALL</button>
+                </div>
+                <div id="shoes-grid" class="product-grid"></div>
+            </div>
+        </section>
+
+        <div class="container" style="margin-top: 20px; margin-bottom: 20px;">
+            <img src="https://rukminim1.flixcart.com/fk-p-flap/1600/140/image/12e457f9251d2f70.jpg" alt="Ad" class="promo-banner-img" onerror="this.src='Gemini_Generated_Image_xyc6lnxyc6lnxyc6.png'">
+        </div>
+
+        <section class="container" id="watch-section">
+            <div class="deals-section">
+                <div class="deals-header">
+                    <div class="deals-title"><h2>Premium Watches</h2></div>
+                    <button class="view-all-btn">VIEW ALL</button>
+                </div>
+                <div id="watch-grid" class="product-grid"></div>
+            </div>
+        </section>
+
+        <section id="collections" class="section collections container">
+            <div class="section-head" style="margin-top: 30px;">
+                <h2>Featured Collections</h2>
+            </div>
+            <div class="collections-grid">
+                <article class="collection-card">
+                    <img src="Gemini_Generated_Image_xyc6lnxyc6lnxyc6.png" alt="Outerwear">
+                    <div class="card-body"><h3>Outerwear</h3><a class="link" href="#product-grid-section">Browse</a></div>
+                </article>
+                <article class="collection-card">
+                    <img src="Essentials.png" alt="Essentials">
+                    <div class="card-body"><h3>Essentials</h3><a class="link" href="#product-grid-section">Browse</a></div>
+                </article>
+                <article class="collection-card">
+                    <img src="streetwear.png" alt="Streetwear">
+                    <div class="card-body"><h3>Streetwear</h3><a class="link" href="#product-grid-section">Browse</a></div>
+                </article>
+            </div>
+        </section>
+
+        <section class="container faq-container" style="margin-top: 40px; background: white; padding: 20px; border-radius: 8px;">
+            <h2 style="margin-bottom: 20px;">Frequently Asked Questions</h2>
+            <div class="faq-item"><details><summary>What is Alpha Clothing's Return Policy?</summary><p>We offer a 7-day easy return policy on all products. Items must be unused.</p></details></div>
+            <div class="faq-item"><details><summary>How can I track my order?</summary><p>Go to 'My Orders' section in the menu.</p></details></div>
+            <div class="faq-item"><details><summary>Is Cash on Delivery available?</summary><p>Yes, we support Cash on Delivery (COD).</p></details></div>
+            <div class="faq-item"><details><summary>Are the products authentic?</summary><p>Absolutely. We source directly from brands.</p></details></div>
+        </section>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-layout">
+                <div class="footer-col">
+                    <h4>ABOUT</h4>
+                    <ul><li><a href="#">Contact Us</a></li><li><a href="#">About Us</a></li><li><a href="#">Careers</a></li><li><a href="#">Stories</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>HELP</h4>
+                    <ul><li><a href="#">Payments</a></li><li><a href="#">Shipping</a></li><li><a href="#">Cancellation</a></li><li><a href="#">FAQ</a></li></ul>
+                </div>
+                <div class="footer-col">
+                    <h4>POLICY</h4>
+                    <ul><li><a href="#">Return Policy</a></li><li><a href="#">Terms of Use</a></li><li><a href="#">Security</a></li><li><a href="#">Privacy</a></li></ul>
+                </div>
+                <div class="footer-col border-left">
+                    <h4>MAIL US:</h4>
+                    <p>Alpha Clothing Internet Pvt Ltd,<br>Bengaluru, 560103,<br>Karnataka, India</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Registered Office Address:</h4>
+                    <p>Alpha Clothing Internet Pvt Ltd,<br>CIN: U51109KA2012PTC066107<br>Telephone: 044-45614700<br><span style="font-size: 10px; color: #555; display:block; margin-top:10px;">Concept: Amandeep | Dev: Siddharth Maurya <br> Team: Anurag & Nikhil</span></p>
+                </div>
+            </div>
+            <div class="footer-bottom-strip">
+                <div class="f-row"><span><i class="fas fa-briefcase"></i> Sell On Alpha</span><span><i class="fas fa-star"></i> Advertise</span><span><i class="fas fa-gift"></i> Gift Cards</span><span><i class="fas fa-question-circle"></i> Help Center</span></div>
+                <p>© 2025 Alpha Clothing.</p>
+                <img src="https://static-assets-web.flixcart.com/fk-p-linchpin-web/fk-cp-zion/img/payment-method_69e7ec.svg" alt="Payments" onerror="this.style.display='none'">
+            </div>
+        </div>
+    </footer>
+
+    <div id="signin-modal" class="modal" aria-hidden="true">
+        <div class="modal-dialog signin-dialog">
+            <button class="modal-close" id="signin-close">&times;</button>
+            <h2>Sign In</h2>
+            <form id="signin-form">
+                <label>Email</label><input type="email" id="signin-email" required placeholder="Enter your email">
+                <label>Password</label><input type="password" id="signin-password" required placeholder="Enter your password">
+                <button type="submit" class="btn" style="width: 100%;">Login</button>
+                <p style="margin-top: 10px; text-align: center;">Don’t have an account? <a href="#" id="signup-link">Register</a></p>
+            </form>
+        </div>
+    </div>
+
+    <div id="signup-modal" class="modal" aria-hidden="true">
+        <div class="modal-dialog signin-dialog">
+            <button class="modal-close" id="signup-close">&times;</button>
+            <h2>Create Account</h2>
+            <form id="signup-form">
+                <label>Full Name</label><input type="text" id="signup-name" required placeholder="Enter your name">
+                <label>Email</label><input type="email" id="signup-email" required placeholder="Enter your email">
+                <label>Password</label><input type="password" id="signup-password" required placeholder="Create a password">
+                <button type="submit" class="btn" style="width: 100%;">Register Now</button>
+                <p style="margin-top: 15px; text-align: center;">Already have an account? <a href="#" id="go-to-signin">Sign In</a></p>
+            </form>
+        </div>
+    </div>
+
+   <div id="toast-box"></div>
+    
+    <script src="data.js"></script>
+
+    <script>
+        const fallbackImg = 'Gemini_Generated_Image_xyc6lnxyc6lnxyc6.png';
+
+        function renderSection(containerId, count, startFrom = 0) {
+            const container = document.getElementById(containerId);
+            if(container && typeof products !== 'undefined') {
+                const sectionProducts = products.slice(startFrom, startFrom + count);
+                
+                container.innerHTML = sectionProducts.map(p => `
+                <div class="product-card" onclick="window.location.href='product.html?id=${p.id}'">
+                  
+                  <button class="wishlist-btn" onclick="event.stopPropagation(); toggleWishlist(this, ${p.id})">
+                    <i class="far fa-heart"></i>
+                  </button>
+
+                  <img src="${p.img}" alt="${p.title}" onerror="this.onerror=null; this.src='${fallbackImg}'">
+                  
+                  <div class="product-info">
+                    <h4 class="product-title">${p.title}</h4>
+                    <div class="product-price">₹ ${p.price}</div>
+                    <button class="btn" style="width:100%; margin-top:10px;">View Details</button>
+                  </div>
+                </div>`).join('');
+            }
+        }
+
+        // Render Calls
+        renderSection('women-grid', 4, 6);  // Women Section
+        renderSection('shoes-grid', 4, 4);  // Shoes Section
+        renderSection('watch-grid', 4, 8);  // Watch Section
+    </script>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
