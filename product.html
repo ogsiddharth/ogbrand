@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details - Alpha Clothing</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Page Specific Styles for Buttons */
+        .fk-product-layout {
+            display: grid;
+            grid-template-columns: 40% 60%;
+            gap: 20px;
+            background: white;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .fk-left-col { position: sticky; top: 90px; height: fit-content; text-align: center; }
+        .image-box img { max-width: 100%; max-height: 450px; object-fit: contain; border: 1px solid #f0f0f0; }
+        
+        /* THE BUTTONS */
+        .fk-action-buttons { display: flex; gap: 10px; margin-top: 15px; }
+        .fk-btn {
+            flex: 1; padding: 16px; font-size: 16px; font-weight: 700; color: white; border: none; cursor: pointer; text-transform: uppercase; border-radius: 2px; display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .cart-btn { background: #ff9f00; } 
+        .buy-btn { background: #fb641b; }
+        
+        /* Right Side */
+        .fk-right-col { padding-left: 20px; }
+        .product-title { font-size: 18px; margin: 0 0 5px; color: #212121; }
+        .current-price { font-size: 28px; font-weight: 500; }
+        
+        /* Reviews & Similar */
+        .reviews-section { border: 1px solid #f0f0f0; border-radius: 4px; margin-top: 30px; padding: 20px; }
+        .review-card { border-bottom: 1px solid #f0f0f0; padding: 15px 0; }
+        .similar-products-container { margin-top: 20px; background: white; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+
+        /* Mobile Sticky Buttons */
+        @media (max-width: 768px) {
+            .fk-product-layout { grid-template-columns: 1fr; padding: 0; }
+            .fk-left-col { position: relative; top: 0; padding: 15px; }
+            .fk-right-col { padding: 15px; padding-bottom: 80px; }
+            .fk-action-buttons {
+                position: fixed; bottom: 0; left: 0; width: 100%; margin: 0; z-index: 100; box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            }
+            .fk-btn { padding: 15px; font-size: 14px; }
+            #similar-grid { grid-template-columns: 1fr 1fr !important; }
+        }
+        /* ==============================================
+   MOBILE BUTTON & FOOTER FIXES
+   Paste inside <style> at the bottom
+   ============================================== */
+
+@media (max-width: 768px) {
+    /* Buttons ko Bottom Nav (60px) ke upar shift kiya */
+    .fk-action-buttons {
+        bottom: 60px !important; 
+        z-index: 1000 !important;
+        padding: 0 !important;
+        box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+    }
+
+    /* Buttons ka size aur look perfect karne ke liye */
+    .fk-btn {
+        padding: 16px !important;
+        font-size: 14px !important;
+        border-radius: 0 !important;
+    }
+
+    /* Footer ke liye jagah banayi taaki content na chhupe */
+    .fk-right-col {
+        padding-bottom: 140px !important; /* Space for Buttons + Nav */
+    }
+}
+    </style>
+</head>
+<body style="background-color: #f1f3f6;">
+
+    <header class="site-header">
+        <div class="container">
+            <div class="header-main">
+                <a class="brand" href="index.html"><img src="form1.png" alt="Alpha" class="logo-img"></a>
+                <div class="search-bar-container">
+                    <input type="text" placeholder="Search for shoes, clothes, watches...">
+                    <button><i class="fas fa-search"></i></button>
+                </div>
+              <nav class="nav-actions">
+    <a href="index.html" class="desktop-link">Home</a>
+    
+    <button class="login-btn" id="signin-btn">Login</button>
+    
+    <div class="user-dropdown" id="user-profile" style="display: none;">
+        <span class="user-trigger">
+            <i class="fas fa-user-circle"></i> 
+            <span id="user-name">User</span> 
+            <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: 3px;"></i>
+        </span>
+        <div class="dropdown-menu">
+            <a href="orders.html"><i class="fas fa-box"></i> My Orders</a>
+            <hr>
+            <a href="#" onclick="logout()" style="color: red;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </div>
+
+    <a href="cart.html" class="cart-link">
+        <div style="position: relative;">
+            <i class="fas fa-shopping-cart"></i>
+            <span id="cart-count" class="cart-badge">0</span>
+        </div>
+        <span>Cart</span>
+    </a>
+</nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="fk-product-layout">
+            
+            <div class="fk-left-col">
+                <div class="image-box">
+                    <img id="main-img" src="" alt="Product Image">
+                </div>
+                <div class="fk-action-buttons">
+                    <button class="fk-btn cart-btn" onclick="addToCartCurrent()">
+                        <i class="fas fa-shopping-cart"></i> ADD TO CART
+                    </button>
+                    <button class="fk-btn buy-btn" onclick="buyNow()">
+                        <i class="fas fa-bolt"></i> BUY NOW
+                    </button>
+                </div>
+            </div>
+
+            <div class="fk-right-col">
+                <p style="color:#878787; font-size:12px; margin-bottom:10px;">Home > Fashion > Wearables > Product</p>
+                <h1 class="product-title" id="p-title">Loading Product...</h1>
+                
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                    <span style="background:#388e3c; color:white; padding:2px 6px; font-size:12px; border-radius:3px; font-weight:700;">4.5 <i class="fas fa-star"></i></span>
+                    <span style="color:#878787; font-size:14px;">2,401 Ratings & 305 Reviews</span>
+                </div>
+
+                <div style="display:flex; align-items:baseline; gap:10px; margin:10px 0;">
+                    <span class="current-price" id="p-price">₹0</span>
+                    <span style="color:#878787; text-decoration:line-through;">₹2,999</span>
+                    <span style="color:#388e3c; font-weight:600;">Special Price</span>
+                </div>
+
+                <div style="margin: 20px 0;">
+                    <p style="font-weight:600; color:#878787; margin-bottom:5px;">Select Size</p>
+                    <div style="display:flex; gap:10px;">
+                        <button class="size-btn">S</button>
+                        <button class="size-btn active">M</button>
+                        <button class="size-btn">L</button>
+                        <button class="size-btn">XL</button>
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px; border: 1px solid #f0f0f0; padding: 15px;">
+                    <h4 style="margin:0 0 10px;">Product Details</h4>
+                    <p id="p-desc" style="color:#212121; line-height:1.5; font-size:14px;">Description...</p>
+                </div>
+
+                <div class="reviews-section">
+                    <h3 style="font-size:18px; margin-top:0;">Ratings & Reviews</h3>
+                    <div class="review-card">
+                        <span style="background:#388e3c; color:white; padding:1px 5px; font-size:11px; border-radius:2px;">5 <i class="fas fa-star"></i></span>
+                        <span style="font-weight:500; font-size:14px; margin-left:5px;">Perfect fit!</span>
+                        <p style="font-size:13px; margin:5px 0;">Product quality is amazing. Looks exactly like the photo.</p>
+                        <p style="font-size:12px; color:#878787;">Rahul S. <i class="fas fa-check-circle"></i> Certified Buyer</p>
+                    </div>
+                    <div class="review-card">
+                        <span style="background:#388e3c; color:white; padding:1px 5px; font-size:11px; border-radius:2px;">4 <i class="fas fa-star"></i></span>
+                        <span style="font-weight:500; font-size:14px; margin-left:5px;">Nice product</span>
+                        <p style="font-size:13px; margin:5px 0;">Comfortable to wear. Delivery was fast.</p>
+                        <p style="font-size:12px; color:#878787;">Amit K. <i class="fas fa-check-circle"></i> Certified Buyer</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="similar-products-container">
+            <h3 style="font-size:18px; margin-top:0;">You might also like</h3>
+            <div id="similar-grid" class="product-grid"></div>
+        </div>
+    </main>
+<footer class="site-footer" style="background-color: #111827; color: #fff; padding: 64px 0 24px; margin-top: 40px;">
+        <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+            <div class="footer-top" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-bottom: 48px;">
+                <div class="footer-brand">
+                    <span style="font-size: 24px; font-weight: 700; display: block; margin-bottom: 15px;">Alpha Clothing</span>
+                    <p style="color: #9ca3af; margin-bottom: 20px;">Premium streetwear crafted for the modern man.</p>
+                    <div class="social-links" style="display: flex; gap: 10px;">
+                        <a href="#" style="color: white;"><i class="fab fa-instagram"></i></a>
+                        <a href="#" style="color: white;"><i class="fab fa-twitter"></i></a>
+                        <a href="#" style="color: white;"><i class="fab fa-facebook-f"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4 style="margin-bottom: 20px;">Shop</h4>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 10px;"><a href="index.html" style="color: #9ca3af; text-decoration: none;">Home</a></li>
+                        <li style="margin-bottom: 10px;"><a href="index.html#collections" style="color: #9ca3af; text-decoration: none;">Collections</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4 style="margin-bottom: 20px;">Support</h4>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 10px;"><a href="#" style="color: #9ca3af; text-decoration: none;">Track Order</a></li>
+                        <li style="margin-bottom: 10px;"><a href="#" style="color: #9ca3af; text-decoration: none;">Help Center</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 24px; text-align: center; color: #9ca3af;">
+                <p>© 2025 Alpha Clothing. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+<div id="signin-modal" class="modal" aria-hidden="true">
+        <div class="modal-dialog signin-dialog">
+            <button class="modal-close" id="signin-close">&times;</button>
+            <h2>Sign In</h2>
+            <form id="signin-form">
+                <label>Email</label>
+                <input type="email" id="signin-email" required placeholder="Enter your email">
+                <label>Password</label>
+                <input type="password" id="signin-password" required placeholder="Enter your password">
+                <button type="submit" class="btn" style="width: 100%;">Login</button>
+                <p style="margin-top: 10px; text-align: center;">
+                    Don’t have an account? <a href="#" id="signup-link">Register</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <div id="signup-modal" class="modal" aria-hidden="true">
+        <div class="modal-dialog signin-dialog">
+            <button class="modal-close" id="signup-close">&times;</button>
+            <h2>Create Account</h2>
+            <form id="signup-form">
+                <label>Full Name</label>
+                <input type="text" id="signup-name" required placeholder="Enter your name">
+                <label>Email</label>
+                <input type="email" id="signup-email" required placeholder="Enter your email">
+                <label>Password</label>
+                <input type="password" id="signup-password" required placeholder="Create a password">
+                <button type="submit" class="btn" style="width: 100%;">Register Now</button>
+                <p style="margin-top: 15px; text-align: center;">
+                    Already have an account? <a href="#" id="go-to-signin">Sign In</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <div id="toast-box"></div>
+    <script src="data.js"></script>
+   <script type="module" src="auth-logic.js"></script>
+<script src="script.js"></script>
+   <script src="data.js"></script>
+
+    <script type="module" src="script.js"></script>
+
+    <script>
+        // --- A. PRODUCT LOAD KARO ---
+        const params = new URLSearchParams(window.location.search);
+        const productId = parseInt(params.get('id')); 
+        
+        // Products load hone ka wait logic
+        const product = (typeof products !== 'undefined') ? products.find(p => p.id === productId) : null;
+
+        if (product) {
+            document.getElementById('main-img').src = product.img;
+            document.getElementById('p-title').textContent = product.title;
+            document.getElementById('p-price').textContent = "₹ " + product.price;
+            document.getElementById('p-desc').textContent = product.desc;
+            document.title = product.title + " - Alpha";
+        }
+
+        // --- B. SIZE SELECTION ---
+        let currentSize = 'M';
+        const sizeBtns = document.querySelectorAll('.size-btn');
+        sizeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelector('.size-btn.active')?.classList.remove('active');
+                btn.classList.add('active');
+                currentSize = btn.innerText;
+            });
+        });
+
+        // --- C. ADD TO CART CLICK ---
+        function addToCartCurrent() {
+            if(!product) return;
+            
+            // Check karo ki script.js load hui ya nahi
+            if (window.addToCartLogic) {
+                // Sahi hai, Data bhejo
+                window.addToCartLogic({ ...product, size: currentSize });
+            } else {
+                // Agar script.js fail ho gayi ho
+                console.error("Main script not connected!");
+                alert("Connecting to server... Please wait 2 seconds and try again.");
+            }
+        }
+
+        // --- D. BUY NOW CLICK ---
+       function buyNow() {
+    if(!product) return;
+    
+    // Temp storage for checkout handover
+    let itemToAdd = { ...product, size: currentSize };
+    localStorage.setItem('alphaDirectBuy', JSON.stringify([itemToAdd]));
+    
+    // Redirect with mode
+    window.location.href = 'checkout.html?mode=direct';
+}
+    </script>
+</body>
+</html>
+</body>
+</html>

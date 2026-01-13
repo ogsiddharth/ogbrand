@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wishlist - Alpha Clothing</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body style="background-color: #f1f3f6;">
+
+    <header class="site-header">
+        <div class="container">
+            <div class="header-main">
+                <a class="brand" href="index.html"><img src="form1.png" alt="Alpha" class="logo-img"></a>
+                <nav class="nav-actions">
+                    <a href="index.html" class="desktop-link">Home</a>
+                    <a href="cart.html" class="cart-link"><i class="fas fa-shopping-cart"></i><span>Cart</span></a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container" style="margin-top: 20px;">
+        <h2 style="margin-bottom: 20px;">My Wishlist ❤️</h2>
+        <div id="wishlist-grid" class="product-grid">
+            <div style="text-align:center; padding:40px; grid-column:1/-1;">Loading Wishlist...</div>
+        </div>
+    </main>
+
+    <div id="toast-box"></div>
+    <script src="data.js"></script>
+    <script type="module" src="script.js"></script>
+
+    <script type="module">
+        import { auth, db, doc, getDoc, updateDoc } from "./firebase-config.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const grid = document.getElementById('wishlist-grid');
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const docSnap = await getDoc(doc(db, "users", user.uid));
+                if (docSnap.exists()) {
+                    const savedIds = docSnap.data().wishlist || [];
+                    
+                    if(savedIds.length === 0) {
+                        grid.innerHTML = `<div style="text-align:center; padding:50px; grid-column:1/-1;"><h3>Your Wishlist is Empty!</h3><a href="index.html" class="btn" style="margin-top:10px;">Explore Items</a></div>`;
+                        return;
+                    }
+
+                    // Filter products from data.js based on IDs
+                    const wishlistItems = window.products.filter(p => savedIds.includes(p.id));
+                    
+                    grid.innerHTML = wishlistItems.map(p => `
+                        <div class="product-card" onclick="window.location.href='product.html?id=${p.id}'">
+                            <button class="wishlist-btn active" onclick="event.stopPropagation(); removeWishlist(${p.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <img src="${p.img}" onerror="this.src='Gemini_Generated_Image_xyc6lnxyc6lnxyc6.png'">
+                            <div class="product-info">
+                                <h4 class="product-title">${p.title}</h4>
+                                <div class="product-price">₹ ${p.price}</div>
+                                <button class="btn" onclick="event.stopPropagation(); window.location.href='product.html?id=${p.id}'">View</button>
+                            </div>
+                        </div>
+                    `).join('');
+
+                    // Remove Function
+                    window.removeWishlist = async (id) => {
+                        if(confirm("Remove from Wishlist?")) {
+                            const newIds = savedIds.filter(pid => pid !== id);
+                            await updateDoc(doc(db, "users", user.uid), { wishlist: newIds });
+                            location.reload();
+                        }
+                    }
+                }
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+</html>

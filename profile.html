@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - Alpha Clothing</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body style="background-color: #f1f3f6;">
+
+    <header class="site-header">
+        <div class="container">
+            <div class="header-main">
+                <a class="brand" href="index.html"><img src="form1.png" alt="Alpha" class="logo-img"></a>
+                <nav class="nav-actions">
+                    <a href="index.html" class="desktop-link">Home</a>
+                    <a href="#" id="header-logout-btn" class="desktop-link" style="color:red;">Logout</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <main class="container" style="margin-top: 30px; margin-bottom: 50px;">
+        <div class="profile-layout">
+            
+            <div class="profile-sidebar">
+                <div class="user-hello">
+                    <div class="profile-pic-small-box">
+                        <img id="side-profile-img" src="https://static-assets-web.flixcart.com/fk-p-linchpin-web/fk-cp-zion/img/profile-pic-male_4811a1.svg" alt="User">
+                    </div>
+                    <div>
+                        <div style="font-size: 12px;">Hello,</div>
+                        <div class="name-display" id="display-name">Loading...</div>
+                    </div>
+                </div>
+                <div class="side-links">
+                    <a href="orders.html"><i class="fas fa-box"></i> My Orders</a>
+                    <a href="wishlist.html"><i class="fas fa-heart"></i> My Wishlist</a>
+                    <a href="#" class="active"><i class="fas fa-user"></i> Profile Info</a>
+                    <a href="#" id="side-logout-btn" style="color: red;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+
+            <div class="profile-content">
+                
+                <div class="p-card profile-header-card">
+                    <div class="pic-uploader">
+                        <img id="main-profile-img" src="https://static-assets-web.flixcart.com/fk-p-linchpin-web/fk-cp-zion/img/profile-pic-male_4811a1.svg">
+                        <label for="file-upload" class="edit-icon" id="trigger-upload" style="cursor: pointer;">
+                            <i class="fas fa-camera"></i>
+                        </label>
+                        <input type="file" id="file-upload" accept="image/*" hidden>
+                    </div>
+                    <div>
+                        <h2 id="header-name">User Name</h2>
+                        <p id="header-email">user@example.com</p>
+                    </div>
+                </div>
+
+                <div class="p-card" style="margin-top: 20px;">
+                    <h3>Personal Information <span class="edit-btn" id="edit-personal-btn">Edit</span></h3>
+                    <form id="personal-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" id="p-name" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Mobile Number</label>
+                                <input type="text" id="p-phone" placeholder="+91" disabled>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Gender</label>
+                                <select id="p-gender" disabled style="width:100%; padding:10px; border:1px solid #e0e0e0; background:#fff;">
+                                    <option value="">Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Date of Birth</label>
+                                <input type="date" id="p-dob" disabled>
+                            </div>
+                        </div>
+                        <button type="submit" class="save-btn" id="btn-personal-save" style="display: none;">SAVE CHANGES</button>
+                    </form>
+                </div>
+
+                <div class="p-card" style="margin-top: 20px;">
+                    <h3>Manage Address <span class="edit-btn" id="edit-address-btn">Edit</span></h3>
+                    <form id="address-form">
+                        <div class="form-group">
+                            <label>Address</label>
+                            <textarea id="addr-text" rows="3" disabled style="width:100%; border:1px solid #e0e0e0; padding:10px;" placeholder="Enter address"></textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>City</label>
+                                <input type="text" id="addr-city" disabled>
+                            </div>
+                            <div class="form-group">
+                                <label>Pincode</label>
+                                <input type="text" id="addr-pin" disabled>
+                            </div>
+                        </div>
+                        <button type="submit" class="save-btn" id="btn-address-save" style="display: none;">SAVE ADDRESS</button>
+                    </form>
+                </div>
+
+                <div class="p-card" style="margin-top: 20px;">
+                    <h3>Security <span class="edit-btn" id="edit-security-btn">Change Password</span></h3>
+                    <form id="security-form" style="display: none;">
+                        <div class="form-group">
+                            <label>New Password</label>
+                            <input type="password" id="new-pass" placeholder="Enter new password">
+                        </div>
+                        <button type="submit" class="save-btn">UPDATE PASSWORD</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <div id="toast-box"></div>
+    
+    <script type="module">
+        import { auth, db, doc, getDoc, updateDoc, updatePassword, updateProfile, signOut } from "./firebase-config.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        // --- INTERNAL TOAST FUNCTION ---
+        function showToast(msg, type="success") {
+            const box = document.getElementById('toast-box');
+            if(!box) return;
+            const div = document.createElement('div');
+            div.className = `toast ${type === 'error' ? 'error' : ''}`;
+            div.innerHTML = `<span>${msg}</span>`;
+            box.appendChild(div);
+            setTimeout(() => div.remove(), 3000);
+        }
+
+        let currentUser = null;
+
+        // --- 1. LOAD DATA ---
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                document.getElementById('header-email').textContent = user.email;
+                
+                const snap = await getDoc(doc(db, "users", user.uid));
+                if (snap.exists()) {
+                    const d = snap.data();
+                    document.getElementById('display-name').textContent = (d.fullName || 'User').split(' ')[0];
+                    document.getElementById('header-name').textContent = d.fullName || 'User';
+                    
+                    // Fill Form
+                    document.getElementById('p-name').value = d.fullName || '';
+                    document.getElementById('p-phone').value = d.phone || '';
+                    document.getElementById('p-gender').value = d.gender || '';
+                    document.getElementById('p-dob').value = d.dob || '';
+                    
+                    if(d.savedAddress) {
+                        document.getElementById('addr-text').value = d.savedAddress.text || '';
+                        document.getElementById('addr-city').value = d.savedAddress.city || '';
+                        document.getElementById('addr-pin').value = d.savedAddress.pin || '';
+                    }
+                    if(d.profilePic) {
+                        document.getElementById('main-profile-img').src = d.profilePic;
+                        document.getElementById('side-profile-img').src = d.profilePic;
+                    }
+                }
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+
+        // --- 2. EVENT LISTENERS (The Fix) ---
+        // Hum HTML onclick use nahi kar rahe, hum JS se element pakad kar listener laga rahe hain.
+
+        // A. Edit Personal Info
+        const editPersonalBtn = document.getElementById('edit-personal-btn');
+        if(editPersonalBtn) {
+            editPersonalBtn.addEventListener('click', () => {
+                document.getElementById('p-name').disabled = false;
+                document.getElementById('p-phone').disabled = false;
+                document.getElementById('p-gender').disabled = false;
+                document.getElementById('p-dob').disabled = false;
+                document.getElementById('btn-personal-save').style.display = 'block';
+                document.getElementById('p-name').focus();
+                showToast("Edit Personal Info Enabled ✏️");
+            });
+        }
+
+        // B. Edit Address
+        const editAddressBtn = document.getElementById('edit-address-btn');
+        if(editAddressBtn) {
+            editAddressBtn.addEventListener('click', () => {
+                document.getElementById('addr-text').disabled = false;
+                document.getElementById('addr-city').disabled = false;
+                document.getElementById('addr-pin').disabled = false;
+                document.getElementById('btn-address-save').style.display = 'block';
+                document.getElementById('addr-text').focus();
+                showToast("Edit Address Enabled ✏️");
+            });
+        }
+
+        // C. Edit Security
+        const editSecurityBtn = document.getElementById('edit-security-btn');
+        if(editSecurityBtn) {
+            editSecurityBtn.addEventListener('click', () => {
+                const form = document.getElementById('security-form');
+                form.style.display = form.style.display === 'none' ? 'block' : 'none';
+            });
+        }
+
+        // D. Upload Image
+        const fileInput = document.getElementById('file-upload');
+        if(fileInput) {
+            fileInput.addEventListener('change', function(e) {
+                if (!currentUser || !this.files[0]) return;
+                const file = this.files[0];
+                
+                if (file.size > 500000) { showToast("Image too big (Max 500KB)", "error"); return; }
+
+                const reader = new FileReader();
+                reader.onload = async function(event) {
+                    const base64 = event.target.result;
+                    document.getElementById('main-profile-img').src = base64;
+                    document.getElementById('side-profile-img').src = base64;
+                    
+                    try {
+                        await updateDoc(doc(db, "users", currentUser.uid), { profilePic: base64 });
+                        showToast("Photo Updated! 📸");
+                    } catch(err) { console.error(err); }
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // E. Save Forms
+        document.getElementById('personal-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('p-name').value;
+            const phone = document.getElementById('p-phone').value;
+            const gender = document.getElementById('p-gender').value;
+            const dob = document.getElementById('p-dob').value;
+
+            try {
+                await updateDoc(doc(db, "users", currentUser.uid), { fullName: name, phone, gender, dob });
+                await updateProfile(currentUser, { displayName: name });
+                
+                // Disable inputs again
+                document.getElementById('p-name').disabled = true;
+                document.getElementById('p-phone').disabled = true;
+                document.getElementById('p-gender').disabled = true;
+                document.getElementById('p-dob').disabled = true;
+                document.getElementById('btn-personal-save').style.display = 'none';
+                
+                showToast("Personal Info Saved ✅");
+            } catch(e) { showToast("Error: " + e.message, "error"); }
+        });
+
+        document.getElementById('address-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const addr = {
+                text: document.getElementById('addr-text').value,
+                city: document.getElementById('addr-city').value,
+                pin: document.getElementById('addr-pin').value
+            };
+            try {
+                await updateDoc(doc(db, "users", currentUser.uid), { savedAddress: addr });
+                
+                document.getElementById('addr-text').disabled = true;
+                document.getElementById('addr-city').disabled = true;
+                document.getElementById('addr-pin').disabled = true;
+                document.getElementById('btn-address-save').style.display = 'none';
+                
+                showToast("Address Saved 🏠");
+            } catch(e) { showToast("Error: " + e.message, "error"); }
+        });
+
+        document.getElementById('security-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const pass = document.getElementById('new-pass').value;
+            if(pass.length < 6) { showToast("Password too short", "error"); return; }
+            try {
+                await updatePassword(currentUser, pass);
+                alert("Password Changed! Please Login Again.");
+                await signOut(auth);
+                window.location.href = 'index.html';
+            } catch(e) { alert("Error: Re-login required."); }
+        });
+
+        // F. Logout
+        const logoutFunc = async (e) => {
+            e.preventDefault();
+            await signOut(auth);
+            window.location.href = 'index.html';
+        };
+        document.getElementById('header-logout-btn').addEventListener('click', logoutFunc);
+        document.getElementById('side-logout-btn').addEventListener('click', logoutFunc);
+
+    </script>
+</body>
+</html>
